@@ -1,0 +1,37 @@
+Docker Threat Modeling
+Given Docker's system components and the STRIDE framework, identify five potential threats that may arise.
+
+1. Spoofing. 
+Working with microservies leads to the question which images are the best as base image for the project. Out there are so many images on dockerhub which make the choise very hard.
+On part to prevent spoofing is not allow unsigned images from dockerhub.
+
+2. Tampering. 
+As the consequence of the host compromise, Dockerfile or any important docker daemon file can be tampered with by hacker to modify the containers setup for their own convenience. 
+Auditing policies need to be set for the important configuration files. Also, appopriate ownership and only necessary permission rights need to be set for the files.
+
+Denial of Service
+Without parameters while building a container it can use all memory of the host. If one container uses all memory can lead to a denail of service because the other containers. 
+
+3. Information disclosure. 
+By default, unrestricted network traffic is enabled between all containers on the same host on the default network bridge. Thus, each container has the potential of reading all packets across the container network on the same host. This might lead to an unintended and unwanted disclosure of information to other containers. Hence, restrict inter-container communication on the default network bridge.
+
+5. Elevation of Privileges. 
+Container privileges may be escalated as a result of tampering with the docker configuration or using the --privilege flag. Containers should be restricted from gaining new privileges.
+
+Kubernetes Threat Modeling
+Given Kubernetes' system components and the STRIDE framework, identify five potential threats that may arise.
+
+1. Spoofing. Kube-api server is the most vital component of the kubernetes. Calls to the kube-api can be spoofed by hackers as it is not secure by default. TLS needs to be used to encrypt the connection.
+In addition, direct internet access, anonymous or basic authentication should be disabled.
+2. Tampering. etcd containts important configuration settings of the whole cluster. Malicious player might tamper with etcd configurations to change the setup to their own favor. Permissions should be highly
+controlled to avoid this from happenning, 644 should be set to etcd folder together with etcd:etcd ownership.
+3. Information Disclosure. etcd may expose highly sensitive information as it manages key-value store. Again, TLS should be used to encrypt the information in travel and calls other than from API server should be restricted.
+4. Denial of Service. Kubelet is not protected from excessive traffic and load which may lead to denial of service. --protect kernel defaults should be set to true.
+5. Elevation of Privilege. Kubelete is not secure by default. The access to kubelet can be gained and privileges may be elevated. To avoid this, the authorization mode argument should not be set to always allow.
+
+Docker-bench Run Results and Analysis
+From the failed findings, select and document 3 findings from the Docker-bench results that you want to harden based on the 5 attack surface areas you identified in Step 1. At least 1 of the 3 hardened findings should be different from the ones mentioned in the exercise (i.e. 5.10, 5.14, and 5.22).
+
+[FAIL] 2.2 Ensure network traffic is restricted between containers on the default bridge (Automated) --> add "icc": false to /etc/docker/deamon.js
+[FAIL] 4.5 Ensure Content trust for Docker is Enabled (Automated) --> export DOCKER_CONTENT_TRUST=1 and use images with a signature
+[FAIL] 5.10 Ensure that the memory usage for container is limited (Automated) --> docker build . -m 256 -t psysaar/image:latest

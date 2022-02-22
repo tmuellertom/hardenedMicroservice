@@ -1,0 +1,23 @@
+1. Incident commander name:
+Thomas Müller
+
+2. Executive Summary of what happened:
+Three new pods were created wuth the name moneropool, minergate, and cryptonight. These seem to be crypto mining pods and they are using much CPU.
+
+3. Summary of what was affected:
+The attacker get control of the cluster and could launch container. At the moment these new container are the only thing what was started but they are abled to launch more container. The whole cluster is affected.
+
+4. Summmry of the impact:
+Launching the crypto-miner Conainer with the high CPU consumption leads to crashing other running pods. 
+
+5. Summary of the remediation steps:
+Make sure to delete the new running pods with --grace-period=0 --force parameter
+Check if there are new services, deployments,... were created and delete them
+Monitor the other services if they start to work normally
+Rotate credentials ;)
+
+6. Summary of lessons learned:
+Monitoring tools are a great help to quickly see when something is not going as expected.
+In real world no one is watchting 24/7 the monitoring tools - alerting is very helpful.
+High CPU usage will crash running pods.
+Harden your cluster because kubernetes is not secure by default to prevent bad things happening.

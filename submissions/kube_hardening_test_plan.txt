@@ -1,0 +1,15 @@
+How will you test the changes?
+The changes now were done on a single cluster, but in real environments there will be always a testing or staging cluster where the hardening can be deployed before affecting production.
+Also we test the hardening steps at first before we can use them in yaml files (e.g. do groupadd --gid 52034 etcd in the shell and then update the cluster.yaml)
+We need to test the changes in two ways:
+1. Are the requirements met with the hardening steps?
+2. Is there any negative affect on the cluster? 
+
+How will you ensure the changes don't negatively affect your cluster?
+In the other projects we learned to set up obersvation and monitoring tools. To be sure all servies are running as expected we will use the tools like grafana, prometheus and jaeger.
+We can measure all of the common metrics and compare them to the production.
+* Memory/CPU consumption - be aware, maybe there is more CPU/Memory in total availibe in production.
+* HTTP Errors
+* HTTP Resopnse time
+* Tracing with jaeger
+It will be also a good idea to deploy a new service or update an docker image on the cluster to make sure the end to end process is not disturbed in any way.
